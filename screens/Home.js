@@ -48,6 +48,7 @@ export default function Home({navigation}) {
         <Button title="Excluir" onPress={() => deletarAtivo(item.id)} />
             <View style={{ width: 10 }} />
         <Button title="Editar"  onPress={() => navigation.navigate("AtualizarAtivos", { id: item.id })}/>
+          <Button title="Usar câmera"  onPress={() => navigation.navigate("UsarCamera")}/>
       </View>
     </View>
   );

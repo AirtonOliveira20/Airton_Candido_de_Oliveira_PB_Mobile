@@ -10,6 +10,8 @@ import CadastrarAtivos from './screens/CadastrarAtivos';
 import AtualizarAtivos from './screens/AtualizarAtivos';
 import CadastrarUsuarios from './screens/CadastrarUsuarios';
 import Dashboard from './screens/Dashboard';
+import UsarCamera from './screens/UsarCamera';
+
 
 
 const Drawer = createDrawerNavigator();
@@ -47,6 +49,7 @@ function AppRoutes() {
             <Stack.Screen name="Main" component={DrawerRoutes} />
             <Stack.Screen name="Home" component={Home} />
             <Stack.Screen name="AtualizarAtivos" component={AtualizarAtivos} />
+            <Stack.Screen name="UsarCamera" component={UsarCamera} />
             
           </>
         )}
