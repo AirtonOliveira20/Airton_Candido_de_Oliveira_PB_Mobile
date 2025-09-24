@@ -1,42 +1,61 @@
-import React, { useState, useEffect } from "react";
-import { View, Button, Image, StyleSheet, Alert} from "react-native";
-import { Camera} from "expo-camera";
+import React, { useState, useRef } from "react";
+import {Text, View, Button, Image, StyleSheet} from "react-native";
+import {CameraView, useCameraPermissions } from "expo-camera";
 
 
 export default function UsarCamera() {
-   const [hasPermission, setHasPermission] = useState(null);
-  const [foto, setFoto] = useState(null);
-  const [cameraRef, setCameraRef] = useState(null);
-  const [type, setType] = useState("back");
 
- useEffect(() => {
-    (async () => {
-      const { status } = await Camera.requestCameraPermissionsAsync();
-      setHasPermission(status === "granted");
-    })();
-  }, []);
+  const [photoUri, setPhotoUri] =useState(null);
+  const [permission, requestPermission] = useCameraPermissions();
+  const cameraRef = useRef(null);
 
-  const tirarFoto = async () => {
-    if (cameraRef) {
-      const data = await cameraRef.takePictureAsync();
-      setFoto(data.uri);
+
+  const takePhoto = async () => {
+    if(cameraRef.current) {
+      const photo = await cameraRef.current.takePictureAsync();
+      setPhotoUri(photo.uri);
     }
-  };
+  }
 
-  if (hasPermission === null) {
-    return <View />;
+
+  if(!permission){
+    return ( 
+    <View>
+      <Text> Permissão da câmera...</Text>
+      </View>
+    )
   }
-  if (hasPermission === false) {
-    Alert.alert("Acesso negado");
-    return <View />;
+
+   if(!permission.granted){
+    return (
+    <View>
+      <Text> Necessário permissão da câmera.</Text> 
+      <Button title="Conceder permissao" onPress={requestPermission}/> 
+      </View>
+    )
   }
+
 
 
   return (
      <View style={styles.container}>
-      <Camera type={type} style={styles.camera}  ref={ref => setCameraRef(ref)}/>
-      <Button title="Tirar Foto" onPress={tirarFoto} />
-      {foto && <Image source={{ uri: foto }} style={styles.imagem} />}
+      {
+      !photoUri ? 
+      (
+         <>
+          <CameraView style={styles.camera} facing="front" ref={cameraRef} />
+          <View style={styles.buttonCamera}> 
+            <Button title="Tirar Foto" onPress={takePhoto} />
+           </View>
+        </>
+        
+      ) : (
+        <>
+          <Image source={{ uri: photoUri }} style={styles.preview} />
+          <Button title="Tirar outra" onPress={() => setPhotoUri(null)} />
+        </>
+        
+      )}
     </View>
   );
 }
@@ -45,12 +64,30 @@ const styles = StyleSheet.create({
   container: 
   { 
     flex: 1, 
+    
+  },
+  camera: {
+    flex: 1,
+  },
+  buttonCamera: {
+    position: "absolute",
+    bottom: 40,
+    alignSelf: "center",
+    backgroundColor: "rgba(0,0,0,0.5)",
+    borderRadius: 50,
+    padding: 10,
+  },
+    previewContainer: {
+    flex: 1,
     justifyContent: "center",
-     alignItems: "center" },
-  imagem: 
-  { 
-    width: 250, 
-    height: 250, 
-    marginTop: 20,
-    borderRadius: 10 },
+    alignItems: "center",
+    backgroundColor: "#111",
+  },
+  preview: {
+    width: 300,
+    height: 400,
+    borderRadius: 12,
+    marginBottom: 20,
+  },
+
 });
