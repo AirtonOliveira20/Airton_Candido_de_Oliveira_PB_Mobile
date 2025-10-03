@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, Image, StyleSheet, ScrollView } from "react-native";
+import {Text, Image, StyleSheet, ScrollView } from "react-native";
 
 export default function Dashboard() {
   return (
